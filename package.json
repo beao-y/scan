@@ -19,6 +19,7 @@
     "ant-design-vue": "^4.2.6",
     "axios": "^1.11.0",
     "dayjs": "^1.11.13",
+    "html5-qrcode": "^2.3.8",
     "lodash-es": "^4.17.21",
     "nprogress": "^0.2.0",
     "pinia": "^2.3.1",
