@@ -21,7 +21,7 @@ const formState = reactive<FormState>({
   remember: false,
 })
 
-async function onFinish(values: FormState) {
+async function onFinish() {
   const route = await getAdminMenu() as IRouteType[]
 
   const formatRes = route.map((item: IRouteType) => {
@@ -41,10 +41,7 @@ async function onFinish(values: FormState) {
 
   globalState.setPermissions(route)
 
-  await globalState.login({
-    userName: values.username,
-    password: values.password,
-  })
+  globalState.setToken('222')
 
   router.push('/')
 }
