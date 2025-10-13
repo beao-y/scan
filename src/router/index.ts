@@ -7,7 +7,7 @@ import 'nprogress/nprogress.css'
 
 const router = createRouter({
   routes: [...dynamicRoutes, ...staticRoutes],
-  history: createWebHistory(import.meta.env.VITE_APP_ROUTER),
+  history: createWebHistory(),
   scrollBehavior: () => ({ left: 0, top: 0 }),
 })
 
