@@ -1,0 +1,9 @@
+@import "tailwindcss";
+
+/* 修复 Ant Design 冲突 */
+.anticon svg {
+  vertical-align: baseline !important;
+}
+
+
+

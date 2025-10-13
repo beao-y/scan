@@ -1,0 +1,26 @@
+//.ant-form-item {
+//  margin-right: 24px ;
+//  margin-bottom: 16px;
+//}
+
+
+.ant-menu-light.ant-menu-root.ant-menu-vertical{
+  border-inline-end: none
+}
+
+// 弹框内容区域可滚动
+.ant-modal-body{
+  overflow: auto !important;
+}
+
+.ant-input-number,.ant-picker{
+  width: 100%;
+}
+
+.ant-divider-horizontal{
+  margin: 0 !important;
+}
+
+[data-theme='dark'] .ant-menu-light{
+  background: var(--ant-color-bg-elevated);
+}
