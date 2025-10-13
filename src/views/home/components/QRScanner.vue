@@ -7,52 +7,85 @@ const isScaning = ref(false)
 const scanResult = ref('')
 let html5Qrcode = null
 
+const cameraIdRef = ref('')
+
 function startScan() {
+//   Html5Qrcode.getCameras().then((devices) => {
+//     isScaning.value = true
+//     console.log('检测到摄像头:', devices)
+
+  //     if (devices && devices.length) {
+  //       // 自动选择后置摄像头
+  //       let cameraId = devices[0].id
+  //       const rearCamera = devices.find(device =>
+  //         device.label.toLowerCase().includes('back')
+  //         || device.label.includes('后置'),
+  //       )
+  //       if (rearCamera) {
+  //         cameraId = rearCamera.id
+  //         cameraIdRef.value = rearCamera.id
+  //       }
+
+  //       html5Qrcode = new Html5Qrcode('reader')
+  //       html5Qrcode.start(
+  //         cameraId,
+  //         {
+  //           fps: 10,
+  //           qrbox: { width: 250, height: 250 },
+  //           aspectRatio: 1.0, // 确保正方形预览
+  //         },
+  //         (decodeText) => {
+  //           console.log('✅ 扫描成功:', decodeText)
+  //           scanResult.value = decodeText
+  //           stopScan()
+  //         },
+  //         (err) => {
+  //           // 正常扫描过程中的错误，可以忽略
+  //           console.log(err)
+  //         },
+  //       ).catch((error) => {
+  //         console.error('❌ 摄像头启动失败:', error)
+  //         isScaning.value = false
+  //         // 可以在这里显示用户友好的错误信息
+  //       })
+  //     }
+  //     else {
+  //       console.error('❌ 未找到可用的摄像头')
+  //       isScaning.value = false
+  //     }
+  //   }).catch((error) => {
+  //     console.error('❌ 获取摄像头权限失败:', error)
+  //     isScaning.value = false
+  //   })
+
   Html5Qrcode.getCameras().then((devices) => {
-    isScaning.value = true
-    console.log('检测到摄像头:', devices)
+    console.log('找到摄像头:', devices.length, '个')
 
-    if (devices && devices.length) {
-      // 自动选择后置摄像头
-      let cameraId = devices[0].id
-      const rearCamera = devices.find(device =>
-        device.label.toLowerCase().includes('back')
-        || device.label.includes('后置'),
-      )
-      if (rearCamera) {
-        cameraId = rearCamera.id
-      }
+    html5Qrcode = new Html5Qrcode('reader')
 
-      html5Qrcode = new Html5Qrcode('reader')
-      html5Qrcode.start(
-        cameraId,
-        {
-          fps: 10,
-          qrbox: { width: 250, height: 250 },
-          aspectRatio: 1.0, // 确保正方形预览
-        },
-        (decodeText) => {
-          console.log('✅ 扫描成功:', decodeText)
-          scanResult.value = decodeText
-          stopScan()
-        },
-        (err) => {
-          // 正常扫描过程中的错误，可以忽略
-          console.log(err)
-        },
-      ).catch((error) => {
-        console.error('❌ 摄像头启动失败:', error)
-        isScaning.value = false
-        // 可以在这里显示用户友好的错误信息
-      })
-    }
-    else {
-      console.error('❌ 未找到可用的摄像头')
-      isScaning.value = false
-    }
-  }).catch((error) => {
-    console.error('❌ 获取摄像头权限失败:', error)
-    isScaning.value = false
+    html5Qrcode.start(
+      { facingMode: 'environment' },
+      {
+        fps: 10,
+        qrbox: { width: 250, height: 250 },
+      },
+      (decodeText) => {
+        console.log('扫描成功:', decodeText)
+        scanResult.value = decodeText
+      },
+      (err) => {
+        console.log('扫描过程:', err)
+      },
+    ).then(() => {
+      console.log('✅ 相机启动成功，应该显示画面了')
+      // 检查 DOM 是否被更新
+      const reader = document.getElementById('reader')
+      ca
+      console.log('reader 内部HTML:', reader.innerHTML)
+      cameraIdRef.value = reader.innerHTML
+    }).catch((error) => {
+      console.error('❌ 相机启动失败:', error)
+    })
   })
 }
 
@@ -74,20 +107,23 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <div class="h-full flex flex-col p-4">
+  <div class="w-full h-full flex flex-col">
     <div class="w-full max-w-md">
       <div class="">
         <div class="scanner-card">
           <div class="scanner-icon">
             📱
           </div>
-          <h2>准备扫描</h2>
           <p>点击下方按钮开始扫描设备二维码</p>
           <a-button class="start-btn" @click="startScan">
             开始扫描
           </a-button>
         </div>
 
+        <div v-if="isScaning && !scanResult" class="mt-6 text-center ">
+          正在启动相机...
+        </div>
+        {{ cameraIdRef }}
         <div
           v-if="scanResult"
           class="mt-6 p-4 bg-green-50 border border-green-200 rounded-lg"
@@ -103,10 +139,9 @@ onBeforeUnmount(() => {
     </div>
 
     <div
-      v-if="isScaning"
       id="reader"
       ref="reader"
-      class="w-full mt-4 h-100 border-2 border-gray-200 rounded-lg overflow-hidden"
+      class="w-full h-64 border-2 mt-4 border-gray-200 rounded-lg overflow-hidden bg-black"
     />
   </div>
 </template>
@@ -114,7 +149,7 @@ onBeforeUnmount(() => {
 <style scoped>
 .scanner-card {
   background: white;
-  padding: 3rem 2rem;
+  padding: 1rem;
   border-radius: 20px;
   text-align: center;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
