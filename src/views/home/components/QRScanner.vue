@@ -89,6 +89,8 @@ function startScan() {
     }).catch((error) => {
       console.error('❌ 相机启动失败:', error)
     })
+  }).catch((error) => {
+    console.error('❌ 获取摄像头权限失败:', error)
   })
 }
 
