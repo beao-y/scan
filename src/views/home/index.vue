@@ -10,11 +10,9 @@ export default {
 </script>
 
 <template>
-  <div>
-    <main class="app-main">
-      <QRScanner />
-    </main>
-  </div>
+  <main class="app-main">
+    <QRScanner />
+  </main>
 </template>
 
 <style>
@@ -41,8 +39,9 @@ export default {
 .app-main {
   flex: 1;
   display: flex;
+  height: 100%;
   justify-content: center;
-  align-items: center;
+  align-items: flex-start;
 }
 
 .app-footer {

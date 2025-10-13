@@ -8,9 +8,8 @@ const scanResult = ref('')
 let html5Qrcode = null
 
 function startScan() {
-  isScaning.value = true
-
   Html5Qrcode.getCameras().then((devices) => {
+    isScaning.value = true
     console.log('检测到摄像头:', devices)
 
     if (devices && devices.length) {
@@ -75,23 +74,19 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <div class=" bg-gray-50 flex items-center justify-center p-4">
+  <div class="h-full flex flex-col p-4">
     <div class="w-full max-w-md">
-      <div class="bg-white shadow-lg rounded-lg p-8 space-y-6">
-        <h2 class="text-2xl font-bold text-gray-800 text-center">
-          Vue 3 二维码扫描器
-        </h2>
-
-        <a-button @click="startScan">
-          开始扫码
-        </a-button>
-
-        <div
-          v-if="isScaning"
-          id="reader"
-          ref="reader"
-          class="w-full h-100 border-2 border-gray-200 rounded-lg overflow-hidden"
-        />
+      <div class="">
+        <div class="scanner-card">
+          <div class="scanner-icon">
+            📱
+          </div>
+          <h2>准备扫描</h2>
+          <p>点击下方按钮开始扫描设备二维码</p>
+          <a-button class="start-btn" @click="startScan">
+            开始扫描
+          </a-button>
+        </div>
 
         <div
           v-if="scanResult"
@@ -106,5 +101,39 @@ onBeforeUnmount(() => {
         </div>
       </div>
     </div>
+
+    <div
+      v-if="isScaning"
+      id="reader"
+      ref="reader"
+      class="w-full mt-4 h-100 border-2 border-gray-200 rounded-lg overflow-hidden"
+    />
   </div>
 </template>
+
+<style scoped>
+.scanner-card {
+  background: white;
+  padding: 3rem 2rem;
+  border-radius: 20px;
+  text-align: center;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+}
+
+.scanner-icon {
+  font-size: 4rem;
+  margin-bottom: 1rem;
+}
+
+.scanner-card h2 {
+  color: #333;
+  margin-bottom: 1rem;
+  font-size: 1.5rem;
+}
+
+.scanner-card p {
+  color: #666;
+  margin-bottom: 2rem;
+  line-height: 1.5;
+}
+</style>
