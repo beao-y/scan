@@ -1,6 +1,6 @@
 /** 分页返回的数据格式 */
 interface PageRes<T> {
-  records: T
+  data: T
   total: number
 }
 

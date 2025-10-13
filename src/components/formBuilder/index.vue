@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { FormInstance } from 'ant-design-vue'
 import type { FormConfig, FormItemType } from '@/components/formBuilder/interface.ts'
-import type { ColumnType } from '@/components/proEditTable/interface.ts'
+import type { ColumnType } from '@/components/proTable/interface.ts'
 import { DownOutlined, UpOutlined } from '@ant-design/icons-vue'
 import { debounce } from 'lodash-es'
 import { computed, ref, toRaw } from 'vue'

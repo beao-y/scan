@@ -18,6 +18,7 @@ import ErrorHandler from './error'
 const refreshTokenUrl = '/refreshToken'
 
 interface MetaType {
+  status: number
   success: boolean
   message: string
 }

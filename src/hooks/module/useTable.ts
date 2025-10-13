@@ -1,8 +1,8 @@
-import type { Response } from '@/request/request.ts'
 import type { Ref } from 'vue'
+import type { Response } from '@/request/request.ts'
+import { ref } from 'vue'
 import { usePagination } from '@/hooks'
 import { antdUtils } from '@/utils/antUtils.ts'
-import { ref } from 'vue'
 
 interface Options<T> {
   formatResult?: (data: T[]) => any

@@ -38,7 +38,7 @@ export default defineConfig((mode: ConfigEnv) => {
     build: {
       chunkSizeWarningLimit: 2000, // 消除打包大小超过500kb警告
       outDir: 'dist', // 指定打包路径，默认为项目根目录下的dist目录
-      minify: 'terser', // Vite 2.6.x 以上需要配置 minify："terser"，terserOptions才能生效
+      minify: 'esbuild', // Vite 2.6.x 以上需要配置 minify："terser"，terserOptions才能生效
       terserOptions: {
         compress: {
           keep_infinity: true, // 防止 Infinity 被压缩成 1/0，这可能会导致 Chrome 上的性能问题
