@@ -7,6 +7,8 @@ const isScaning = ref(false)
 const scanResult = ref('')
 let html5Qrcode = null
 
+const devicesNum = ref(0)
+
 const cameraIdRef = ref('')
 
 function startScan() {
@@ -61,6 +63,7 @@ function startScan() {
   Html5Qrcode.getCameras().then((devices) => {
     console.log('找到摄像头:', devices.length, '个')
 
+    devicesNum.value = devices.length
     html5Qrcode = new Html5Qrcode('reader')
 
     html5Qrcode.start(
@@ -123,7 +126,7 @@ onBeforeUnmount(() => {
         <div v-if="isScaning && !scanResult" class="mt-6 text-center ">
           正在启动相机...
         </div>
-        {{ cameraIdRef }}
+        <div>{{ devicesNum }}个摄像头 {{ cameraIdRef }}</div>
         <div
           v-if="scanResult"
           class="mt-6 p-4 bg-green-50 border border-green-200 rounded-lg"
