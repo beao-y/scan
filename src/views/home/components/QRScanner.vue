@@ -16,7 +16,7 @@ function startScan() {
     isScaning.value = true
 
     const screenWidth = window.innerWidth
-    const qrboxSize = Math.min(screenWidth * 0.7, 500) // 屏幕70%，最大300px
+    const qrboxSize = Math.min(screenWidth * 0.7, 300) // 屏幕70%，最大300px
 
     html5Qrcode = new Html5Qrcode('reader')
 
