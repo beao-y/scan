@@ -10,8 +10,10 @@ let html5Qrcode = null
 
 function startScan() {
   Html5Qrcode.getCameras().then((devices) => {
-    if (!devices.length)
+    if (!devices.length) {
+      antdUtils.message?.error('未找到摄像头设备')
       return
+    }
 
     isScaning.value = true
 
@@ -31,14 +33,7 @@ function startScan() {
       (err) => {
         antdUtils.message?.error(err)
       },
-    ).then(() => {
-      // 退出扫码页面
-
-    }).catch((error) => {
-      antdUtils.message?.error(error)
-    })
-  }).catch((error) => {
-    antdUtils.message?.error(error)
+    )
   })
 }
 
