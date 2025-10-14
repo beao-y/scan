@@ -15,16 +15,13 @@ function startScan() {
 
     isScaning.value = true
 
-    const screenWidth = window.innerWidth
-    const qrboxSize = Math.min(screenWidth * 0.7, 300) // 屏幕70%，最大300px
-
     html5Qrcode = new Html5Qrcode('reader')
 
     html5Qrcode.start(
       { facingMode: 'environment' },
       {
         fps: 10,
-        qrbox: { width: qrboxSize, height: qrboxSize },
+        qrbox: { width: 300, height: 400 },
       },
       (decodeText) => {
         scanResult.value = decodeText
