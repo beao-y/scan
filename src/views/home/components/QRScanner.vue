@@ -25,13 +25,15 @@ function startScan() {
       },
       (decodeText) => {
         scanResult.value = decodeText
+        isScaning.value = false
+        html5Qrcode.stop()
       },
       (err) => {
         antdUtils.message?.error(err)
       },
     ).then(() => {
       // 退出扫码页面
-      isScaning.value = false
+
     }).catch((error) => {
       antdUtils.message?.error(error)
     })
