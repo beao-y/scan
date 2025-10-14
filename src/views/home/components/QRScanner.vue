@@ -31,10 +31,10 @@ function startScan() {
         html5Qrcode.stop()
         antdUtils.message?.success('扫码成功！')
       },
-      (err) => {
-        antdUtils.message?.error(err)
-      },
+      () => {},
     )
+  }).catch(() => {
+    antdUtils.message?.error('摄像头访问失败')
   })
 }
 
