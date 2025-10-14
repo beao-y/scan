@@ -29,6 +29,7 @@ function startScan() {
         scanResult.value = decodeText
         isScaning.value = false
         html5Qrcode.stop()
+        antdUtils.message?.success('扫码成功！')
       },
       (err) => {
         antdUtils.message?.error(err)
