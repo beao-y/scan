@@ -8,21 +8,15 @@ const isScaning = ref(false)
 const scanResult = ref('')
 let html5Qrcode = null
 
-const devicesNum = ref(0)
-
-const cameraIdRef = ref('')
-
 function startScan() {
-  const screenWidth = window.innerWidth
-  const qrboxSize = Math.min(screenWidth * 0.7, 500) // 屏幕70%，最大300px
-
-  console.log('qrboxSize', screenWidth, qrboxSize)
-
   Html5Qrcode.getCameras().then((devices) => {
     if (!devices.length)
       return
 
     isScaning.value = true
+
+    const screenWidth = window.innerWidth
+    const qrboxSize = Math.min(screenWidth * 0.7, 500) // 屏幕70%，最大300px
 
     html5Qrcode = new Html5Qrcode('reader')
 
@@ -97,7 +91,7 @@ onBeforeUnmount(() => {
     </div>
 
     <div
-      v-if="isScaning"
+      v-show="isScaning"
       id="reader"
       ref="reader"
       class="w-full h-full border-2 mt-4 border-gray-200 rounded-lg overflow-hidden bg-black"

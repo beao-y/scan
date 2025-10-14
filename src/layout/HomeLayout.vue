@@ -20,7 +20,7 @@ const isCollapsed = computed(() => {
 </script>
 
 <template>
-  <a-layout class="w-full h-full  p-4">
+  <a-layout class="w-full h-full">
     <a-layout-sider
       v-if="!isMobile"
       v-model:collapsed="isCollapsed"
