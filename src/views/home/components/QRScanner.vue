@@ -37,8 +37,6 @@ function startScan() {
     })
   }).catch((error) => {
     antdUtils.message?.error(error)
-  }).finally(() => {
-    isScaning.value = false
   })
 }
 
