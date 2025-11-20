@@ -8,18 +8,9 @@ const isScaning = ref(false)
 const html5Qrcode = ref(null)
 const scanResults = ref([])
 const lastScanTime = ref(0) // 用于防抖
+const lastErrorTime = ref(0) // 错误码提示防抖
 
 const requiredCodes = ['order', 'room', 'device']
-
-// 防抖函数
-function debounce(fn, delay) {
-  let timer = null
-  return (...args) => {
-    if (timer)
-      clearTimeout(timer)
-    timer = setTimeout(() => fn(...args), delay)
-  }
-}
 
 // 计算属性
 const progressPercentage = computed(() => {
@@ -49,9 +40,13 @@ const isAllCodesValid = computed(() => {
 })
 
 // 防抖的错误提示
-const showErrorDebounced = debounce((messageText) => {
-  antdUtils.message?.error(messageText)
-}, 2000)
+function showErrorDebounced(messageText) {
+  const now = Date.now()
+  if (now - lastErrorTime.value > 2000) {
+    antdUtils.message?.error(messageText)
+    lastErrorTime.value = now
+  }
+}
 
 // 方法
 function startScan() {
@@ -120,6 +115,9 @@ function handleScanResult(decodeText) {
     showErrorDebounced('该二维码已扫描，请扫描新的二维码')
     return
   }
+
+  // 重置错误时间（因为这次扫码成功了）
+  lastErrorTime.value = 0
 
   // 添加到结果
   scanResults.value.push({
