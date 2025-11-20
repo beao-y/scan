@@ -1,12 +1,12 @@
 <script setup>
 import { Html5Qrcode } from 'html5-qrcode'
 import { computed, onUnmounted, ref } from 'vue'
+import { antdUtils } from '@/utils/antUtils'
 
 // 响应式数据
 const isScaning = ref(false)
 const html5Qrcode = ref(null)
 const scanResults = ref([])
-const errorMessage = ref('')
 const lastScanTime = ref(0) // 用于防抖
 
 const requiredCodes = ['order', 'room', 'device']
@@ -24,10 +24,6 @@ function debounce(fn, delay) {
 // 计算属性
 const progressPercentage = computed(() => {
   return Math.round((scanResults.value.length / 3) * 100)
-})
-
-const scannedTypes = computed(() => {
-  return scanResults.value.map(item => item.type)
 })
 
 const currentRequiredType = computed(() => {
@@ -54,24 +50,21 @@ const isAllCodesValid = computed(() => {
 
 // 防抖的错误提示
 const showErrorDebounced = debounce((messageText) => {
-  errorMessage.value = messageText
-  setTimeout(() => {
-    errorMessage.value = ''
-  }, 2000)
-}, 500)
+  antdUtils.message?.error(messageText)
+}, 2000)
 
 // 方法
 function startScan() {
   Html5Qrcode.getCameras()
     .then((devices) => {
       if (!devices.length) {
-        message.error('未找到摄像头设备')
+        antdUtils.message?.error('未找到摄像头设备')
         return
       }
 
       isScaning.value = true
       scanResults.value = []
-      errorMessage.value = ''
+
       lastScanTime.value = 0
 
       html5Qrcode.value = new Html5Qrcode('reader')
@@ -85,16 +78,11 @@ function startScan() {
         (decodeText) => {
           handleScanResult(decodeText)
         },
-        (error) => {
-          // 忽略扫码过程中的常规错误
-          if (!error.includes('NotFoundException')) {
-            console.log('扫码错误:', error)
-          }
-        },
+        () => { },
       )
     })
     .catch(() => {
-      message.error('摄像头访问失败')
+      antdUtils.message?.error('摄像头访问失败')
     })
 }
 
@@ -140,11 +128,11 @@ function handleScanResult(decodeText) {
     timestamp: Date.now(),
   })
 
-  message.success(`${getCodeType(decodeText)}扫描成功！`)
+  antdUtils.message?.success(`${getCodeType(decodeText)}扫描成功！`)
 
   // 检查是否完成所有扫描
   if (scanResults.value.length >= 3) {
-    completeScanning()
+    stopScan()
   }
 }
 
@@ -168,73 +156,24 @@ function getCodeType(code) {
   return typeMap[type] || '未知码'
 }
 
-function getTypeName(type) {
-  const typeMap = {
-    order: '订单码',
-    room: '房间码',
-    device: '设备码',
-  }
-  return typeMap[type] || '未知'
-}
-
-function completeScanning() {
-  isScaning.value = false
-  if (html5Qrcode.value) {
-    html5Qrcode.value.stop().then(() => {
-      html5Qrcode.value = null
-    }).catch(() => {
-      html5Qrcode.value = null
-    })
-  }
-  message.success('所有二维码扫描完成！')
-}
-
 function stopScan() {
   isScaning.value = false
+
   if (html5Qrcode.value) {
-    html5Qrcode.value.stop().then(() => {
-      html5Qrcode.value = null
-    }).catch(() => {
-      html5Qrcode.value = null
-    })
+    html5Qrcode.value.stop()
+    html5Qrcode.value = null
   }
-  message.info('已停止扫描')
+  antdUtils.message?.info('已停止扫描')
 }
 
 function resetScan() {
   stopScan()
   scanResults.value = []
-  errorMessage.value = ''
   lastScanTime.value = 0
 }
 
 async function confirmResults() {
-  if (!isAllCodesValid.value) {
-    message.error('请确保订单码、房间码、设备码都已正确扫描')
-    return
-  }
-
-  try {
-    const result = await submitScanResults()
-    message.success('提交成功！')
-    // 触发事件
-    // emit('scan-complete', result)
-  }
-  catch (error) {
-    message.error(`提交失败：${error.message}`)
-  }
-}
-
-async function submitScanResults() {
-  const submitData = {
-    orderCode: scanResults.value.find(item => item.type === 'order')?.code,
-    roomCode: scanResults.value.find(item => item.type === 'room')?.code,
-    deviceCode: scanResults.value.find(item => item.type === 'device')?.code,
-    scanTime: Date.now(),
-  }
-
-  console.log('提交数据:', submitData)
-  return { success: true, data: submitData }
+  // 扫描完成调用接口
 }
 
 // 生命周期
@@ -279,11 +218,6 @@ onUnmounted(() => {
               <a-progress :percent="progressPercentage" :show-info="false" />
               <span class="progress-text">已完成 {{ scanResults.length }}/3</span>
             </div>
-            <div class="scanned-types">
-              <a-tag v-for="type in scannedTypes" :key="type" color="blue">
-                {{ getTypeName(type) }}
-              </a-tag>
-            </div>
             <a-button type="dashed" size="large" @click="stopScan">
               停止扫描
             </a-button>
@@ -316,11 +250,6 @@ onUnmounted(() => {
               </a-button>
             </template>
           </a-card>
-        </div>
-
-        <!-- 错误提示 -->
-        <div v-if="errorMessage" class="error-message">
-          <a-alert :message="errorMessage" type="error" show-icon />
         </div>
       </div>
     </div>
